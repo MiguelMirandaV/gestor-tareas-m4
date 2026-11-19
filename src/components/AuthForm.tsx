@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
+import { useNavigate } from 'react-router'
 import { authErrorMessage } from '../features/auth/authErrorMessage'
 import { loginWithEmail, registerWithEmail } from '../features/auth/authService'
 
@@ -7,10 +8,10 @@ export type AuthMode = 'login' | 'register'
 
 interface AuthFormProps {
   mode: AuthMode
-  onSwitch: () => void
 }
 
-export function AuthForm({ mode, onSwitch }: AuthFormProps) {
+export function AuthForm({ mode }: AuthFormProps) {
+  const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -110,7 +111,12 @@ export function AuthForm({ mode, onSwitch }: AuthFormProps) {
       <button className="primary-button" type="submit" disabled={submitting}>
         {submitting ? 'Espera un momento…' : registering ? 'Crear cuenta' : 'Iniciar sesión'}
       </button>
-      <button className="text-button" type="button" onClick={onSwitch} disabled={submitting}>
+      <button
+        className="text-button"
+        type="button"
+        onClick={() => navigate(registering ? '/login' : '/register')}
+        disabled={submitting}
+      >
         {registering ? 'Ya tengo cuenta' : 'Crear una cuenta'}
       </button>
     </form>
