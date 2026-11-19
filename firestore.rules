@@ -1,0 +1,41 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function validTask() {
+      let task = request.resource.data;
+      return task.keys().hasOnly([
+          'userId', 'title', 'description', 'completed', 'createdAt', 'updatedAt'
+        ])
+        && task.keys().hasAll([
+          'userId', 'title', 'description', 'completed', 'createdAt', 'updatedAt'
+        ])
+        && task.userId is string
+        && task.userId == request.auth.uid
+        && task.title is string
+        && task.title.size() > 0
+        && task.title.size() <= 120
+        && task.description is string
+        && task.description.size() <= 1000
+        && task.completed is bool
+        && task.createdAt is timestamp
+        && task.updatedAt is timestamp;
+    }
+
+    match /tasks/{taskId} {
+      allow get, list: if signedIn() && resource.data.userId == request.auth.uid;
+      allow create: if signedIn() && validTask();
+      // The owner and original creation time must remain unchanged on edits.
+      allow update: if signedIn()
+        && resource.data.userId == request.auth.uid
+        && request.resource.data.userId == resource.data.userId
+        && request.resource.data.createdAt == resource.data.createdAt
+        && validTask();
+      allow delete: if signedIn() && resource.data.userId == request.auth.uid;
+    }
+  }
+}
