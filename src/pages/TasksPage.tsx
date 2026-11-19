@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { EmailSummaryButton } from '../components/EmailSummaryButton'
 import { TaskForm } from '../components/TaskForm'
 import { TaskList } from '../components/TaskList'
 import { authErrorMessage } from '../features/auth/authErrorMessage'
@@ -62,6 +63,11 @@ export function TasksPage() {
           </div>
         )}
         {!loading && !error && <TaskList tasks={tasks} />}
+      </section>
+
+      <section className="task-panel" aria-labelledby="email-title">
+        <h2 id="email-title">Resumen por correo</h2>
+        {user && <EmailSummaryButton user={user} />}
       </section>
     </main>
   )
