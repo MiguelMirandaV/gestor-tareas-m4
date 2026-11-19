@@ -1,9 +1,9 @@
 import { SendEmailCommand, SESClient } from '@aws-sdk/client-ses'
 import { getAuth } from 'firebase-admin/auth'
 import { getFirestore } from 'firebase-admin/firestore'
-import { getFirebaseAdminApp } from '../server/firebaseAdmin'
-import { buildTaskSummary, isSummaryTask } from '../server/taskSummary'
-import type { SummaryTask } from '../server/taskSummary'
+import { getFirebaseAdminApp } from '../server/firebaseAdmin.js'
+import { buildTaskSummary, isSummaryTask } from '../server/taskSummary.js'
+import type { SummaryTask } from '../server/taskSummary.js'
 
 function jsonResponse(message: string, status: number): Response {
   return Response.json({ message }, {
